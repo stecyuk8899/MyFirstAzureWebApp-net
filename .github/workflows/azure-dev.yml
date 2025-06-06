@@ -31,12 +31,16 @@ jobs:
         run: |
               curl -fsSL https://aka.ms/install-azd.sh | bash
 
-      - name: Login to Azure using Federated Identity
+      - name: Log in with Azure (Federated Credentials)
+        shell: pwsh
         run: |
-          azd auth login \
-            --client-id ${{ secrets.AZURE_CLIENT_ID }} \
-            --tenant-id ${{ secrets.AZURE_TENANT_ID }} \
-            --federated-credential-provider github
+              azd auth login `
+              --client-id "$Env:AZURE_CLIENT_ID" `
+              --tenant-id "$Env:AZURE_TENANT_ID" `
+              --federated-credential-provider "github"
+        env:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           
       - name: Provision Infrastructure
         run: azd provision --no-prompt
